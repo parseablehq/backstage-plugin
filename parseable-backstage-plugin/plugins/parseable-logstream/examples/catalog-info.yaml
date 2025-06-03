@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service
+  description: An example service with Parseable logs integration
+  annotations:
+    parseable.io/base-url: http://34.235.160.254:8000
+spec:
+  type: service
+  lifecycle: production
+  owner: team-a
+  system: system-a

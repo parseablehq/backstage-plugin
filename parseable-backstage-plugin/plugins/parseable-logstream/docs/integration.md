@@ -84,7 +84,7 @@ kind: Component
 metadata:
   name: example-service
   annotations:
-    parseable.io/base-url: http://your-parseable-server:8000
+    parseable.io/base-url: https://demo.parseable.com
   # ...
 spec:
   type: service

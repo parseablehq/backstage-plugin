@@ -83,7 +83,7 @@ kind: Component
 metadata:
   name: example-service
   annotations:
-    parseable.io/base-url: http://34.235.160.254:8000
+    parseable.io/base-url: https://demo.parseable.com
   # ...
 spec:
   type: service
@@ -103,7 +103,7 @@ metadata:
   name: example-service
   description: An example service with Parseable logs
   annotations:
-    parseable.io/base-url: http://34.235.160.254:8000
+    parseable.io/base-url: https://demo.parseable.com
 spec:
   type: service
   lifecycle: production

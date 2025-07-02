@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
@@ -87,8 +87,22 @@ export const LogStreamCard = ({ title = 'Parseable Logs' }: LogStreamCardProps) 
   
   const [selectedDataset, setSelectedDataset] = useState<string>('');
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [error, setError] = useState<Error | null>(null);
   const [isLiveTail, setIsLiveTail] = useState<boolean>(false);
-  const [error, setError] = useState<Error | undefined>(undefined);
+  
+  // Create a ref for the log container to handle auto-scrolling
+  const logContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Auto-scroll to bottom when logs update during live tail
+  useEffect(() => {
+    if (isLiveTail && logContainerRef.current) {
+      // Safely access scrollHeight with null check
+      const container = logContainerRef.current;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+  }, [logs, isLiveTail]);
 
   const baseUrl = entity.metadata.annotations?.['parseable.io/base-url'] || '';
 
@@ -110,7 +124,7 @@ export const LogStreamCard = ({ title = 'Parseable Logs' }: LogStreamCardProps) 
       try {
         const logData = await parseableClient.getLogs(baseUrl, selectedDataset);
         setLogs(logData);
-        setError(undefined);
+        setError(null);
       } catch (err) {
         setError(err instanceof Error ? err : new Error(String(err)));
         setIsLiveTail(false);
@@ -159,12 +173,30 @@ export const LogStreamCard = ({ title = 'Parseable Logs' }: LogStreamCardProps) 
 
   // Render log content with proper formatting
   const renderLogContent = (log: LogEntry) => {
-    // Convert log entry to string representation
-    const logString = JSON.stringify(log, null, 2);
+    // Convert log entry to string representation with safe handling of circular references
+    let logString = '';
+    try {
+      // Use a replacer function to handle circular references
+      const seen = new WeakSet();
+      logString = JSON.stringify(log, (_key, value) => {
+        // Handle objects to avoid circular references
+        if (typeof value === 'object' && value !== null) {
+          if (seen.has(value)) {
+            return '[Circular Reference]';
+          }
+          seen.add(value);
+        }
+        return value;
+      }, 2);
+    } catch (error) {
+      // Fallback if JSON.stringify fails
+      const err = error instanceof Error ? error : new Error(String(error));
+      logString = `[Error stringifying log: ${err.message}]`;
+    }
     
     return (
       <div className={`${classes.logContent} ${getLogLevelColor(log)}`}>
-        {logString}
+        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{logString}</pre>
       </div>
     );
   };
@@ -259,7 +291,7 @@ export const LogStreamCard = ({ title = 'Parseable Logs' }: LogStreamCardProps) 
       )}
 
       {selectedDataset ? (
-        <Paper variant="outlined" className={classes.logContainer}>
+        <Paper ref={logContainerRef} variant="outlined" className={classes.logContainer}>
           {logs.length === 0 ? (
             <Typography variant="body2" align="center" style={{ padding: '16px' }}>
               No logs found for the selected dataset

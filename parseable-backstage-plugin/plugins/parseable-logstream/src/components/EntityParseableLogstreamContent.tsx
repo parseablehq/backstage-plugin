@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import { LogStreamCard } from './LogStreamCard';
-
+import React from 'react';
 /**
  * Component to render Parseable logstream content on an entity page
  */

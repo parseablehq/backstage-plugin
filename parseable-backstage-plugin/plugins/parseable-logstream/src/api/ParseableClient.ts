@@ -190,7 +190,7 @@ export class ParseableClient {
   }
 
   /**
-   * Get logs for a specific dataset
+   * Get logs for a specific dataset using PostgreSQL syntax
    */
   async getLogs(
     baseUrl: string, 
@@ -212,29 +212,104 @@ export class ParseableClient {
       startTime = fiveMinutesAgo.toISOString();
     }
     
-    // Build the SQL query
-    let sqlQuery = `select * from ${dataset}`;
+    // We'll use ISO format timestamps directly in the SQL query
+    // but keep the original ISO strings for the request body
+    
+    // Build the SQL query with proper PostgreSQL syntax
+    let sqlQuery = `SELECT * FROM ${dataset}`;
+    
+    // Add WHERE clause for search query if provided
+    const whereConditions = [];
+    
+    // Add search query condition if provided
     if (query && query.trim() !== '') {
-      sqlQuery += ` where ${query}`;
+      // If the query is a simple text search, wrap it in a LIKE clause
+      if (!query.includes('=') && !query.includes('<') && !query.includes('>') && 
+          !query.toLowerCase().includes(' and ') && !query.toLowerCase().includes(' or ')) {
+        // Search in all fields using ILIKE for case-insensitive search
+        whereConditions.push(`body ILIKE '%${query}%'`);
+      } else {
+        // User provided a more complex query, use it as is
+        whereConditions.push(query);
+      }
     }
+    
+    // Add time range conditions
+    if (startTime) {
+      whereConditions.push(`p_timestamp >= '${startTime}'`);
+    }
+    
+    if (endTime) {
+      whereConditions.push(`p_timestamp <= '${endTime}'`);
+    }
+    
+    // Combine all WHERE conditions
+    if (whereConditions.length > 0) {
+      sqlQuery += ` WHERE ${whereConditions.join(' AND ')}`;
+    }
+    
+    // Add ORDER BY to get newest logs first
+    sqlQuery += ` ORDER BY p_timestamp DESC`;
     
     // Add limit to the query if specified
     if (limit && limit > 0) {
-      sqlQuery += ` limit ${limit}`;
+      sqlQuery += ` LIMIT ${limit}`;
     }
     
     const requestBody = {
       query: sqlQuery,
-      startTime: startTime,
-      endTime: endTime,
+      streamName: dataset,
+      startTime: startTime || '',
+      endTime: endTime || ''
     };
     
+    console.log('Request body:', JSON.stringify(requestBody, null, 2));
+    
     try {
+      console.log('Executing query:', sqlQuery);
       
       const response = await this.fetchApi.fetch(`${baseUrl}/api/v1/query`, {
         method: 'POST',
         headers: requestHeaders,
         body: JSON.stringify(requestBody),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          throw new Error('Authentication failed. Please check your Parseable credentials.');
+        }
+        throw new Error(`Failed to fetch logs: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data.map(entry => LogEntrySchema.parse(entry)) : [];
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        throw new Error(`Invalid log format from Parseable API: ${e.message}`);
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Get logs directly from the logstream API
+   * This is a simpler approach that doesn't use the query API
+   */
+  async getLogsByStream(
+    baseUrl: string,
+    dataset: string,
+    limit: number = 100
+  ): Promise<LogEntry[]> {
+    const headers = await this.getAuthHeader(baseUrl);
+    
+    try {
+      // Use the logstream API endpoint directly
+      const url = `${baseUrl}/api/v1/logstream/${dataset}/logs?limit=${limit}`;
+      
+      console.log('Fetching logs from logstream API:', url);
+      
+      const response = await this.fetchApi.fetch(url, {
+        headers,
       });
       
       if (!response.ok) {

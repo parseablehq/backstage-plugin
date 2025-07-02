@@ -3,6 +3,7 @@ import { ParseableLogstreamPage } from './ParseableLogstreamPage';
 import { Entity } from '@backstage/catalog-model';
 import { MissingAnnotationEmptyState } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import React from 'react';
 // Define the annotation constant directly here
 const PARSEABLE_ANNOTATION_BASE_URL = 'parseable.io/base-url';
 

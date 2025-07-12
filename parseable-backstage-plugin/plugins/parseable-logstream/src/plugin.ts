@@ -22,7 +22,7 @@ export const ParseableLogstreamPage = parseableLogstreamPlugin.provide(
   createRoutableExtension({
     name: 'ParseableLogstreamPage',
     component: () =>
-      import('./components/ParseableLogstreamPage.tsx').then(m => m.ParseableLogstreamPage),
+      import('./components/ParseableLogstreamPage').then(m => m.ParseableLogstreamPage),
     mountPoint: rootRouteRef,
   }),
 );
@@ -32,7 +32,7 @@ export const EntityParseableLogstreamContent = parseableLogstreamPlugin.provide(
     name: 'EntityParseableLogstreamContent',
     component: {
       lazy: () =>
-        import('./components/EntityParseableLogstreamContent.tsx').then(
+        import('./components/EntityParseableLogstreamContent').then(
           m => m.EntityParseableLogstreamContent,
         ),
     },

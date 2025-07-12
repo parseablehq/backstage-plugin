@@ -35,7 +35,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { ParseableLogstreamPage } from '@internal/plugin-parseable-logstream';
+import { ParseableLogstreamPage } from '@parseable/backstage-plugin-logstream';
 
 const app = createApp({
   apis,

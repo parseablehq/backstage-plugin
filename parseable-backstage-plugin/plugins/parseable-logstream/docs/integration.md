@@ -13,7 +13,7 @@ This guide provides detailed instructions on how to integrate the Parseable logs
 From your Backstage root directory, run:
 
 ```bash
-yarn add --cwd packages/app @internal/plugin-parseable-logstream
+yarn add --cwd packages/app @parseable/backstage-plugin-logstream
 ```
 
 ## Step 2: Configure Authentication
@@ -37,7 +37,7 @@ Add the plugin to your Backstage app:
 
 ```tsx
 // packages/app/src/App.tsx
-import { parseableLogstreamPlugin } from '@internal/plugin-parseable-logstream';
+import { parseableLogstreamPlugin } from '@parseable/backstage-plugin-logstream';
 
 const app = createApp({
   // ...
@@ -57,7 +57,7 @@ Add the plugin to your entity page to display log streams:
 import {
   EntityParseableLogstreamContent,
   isParseableLogstreamAvailable,
-} from '@internal/plugin-parseable-logstream';
+} from '@parseable/backstage-plugin-logstream';
 
 // Add to your entity page layout
 const serviceEntityPage = (

@@ -2,7 +2,7 @@ export {
   parseableLogstreamPlugin,
   ParseableLogstreamPage,
   EntityParseableLogstreamContent,
-} from './plugin.ts';
-export { LogStreamCard } from './components/LogStreamCard.tsx';
-export { isParseableLogstreamAvailable } from './conditions.ts';
-export * from './routes.ts';
+} from './plugin';
+export { LogStreamCard } from './components/LogStreamCard';
+export { isParseableLogstreamAvailable } from './conditions';
+export * from './routes';

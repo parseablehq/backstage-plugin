@@ -19,7 +19,7 @@ This plugin allows engineers to pull their own Parseable log-streams directly on
 
 ```bash
 # From your Backstage root directory
-yarn add --cwd packages/app @internal/plugin-parseable-logstream
+yarn add --cwd packages/app @parseable/backstage-plugin-logstream
 ```
 
 2. Configure the plugin in your `app-config.yaml`:
@@ -36,7 +36,7 @@ You need to set the `PARSEABLE_B64_CRED` environment variable with the Base64 en
 
 ```tsx
 // packages/app/src/App.tsx
-import { parseableLogstreamPlugin } from '@internal/plugin-parseable-logstream';
+import { parseableLogstreamPlugin } from '@parseable/backstage-plugin-logstream';
 
 const app = createApp({
   // ...
@@ -54,7 +54,7 @@ const app = createApp({
 import {
   EntityParseableLogstreamContent,
   isParseableLogstreamAvailable,
-} from '@internal/plugin-parseable-logstream';
+} from '@parseable/backstage-plugin-logstream';
 
 // Add to your entity page layout
 const serviceEntityPage = (
@@ -126,3 +126,23 @@ To build the plugin:
 # From the plugin directory
 yarn build
 ```
+
+## Publishing
+
+This plugin is published to the npm registry under the `@parseable` organization. To publish a new version:
+
+```bash
+# From the plugin directory
+yarn build
+npm publish
+```
+
+Note: You need to be a member of the @parseable organization on npm and logged in via `npm login` to publish.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+Apache-2.0

@@ -386,7 +386,12 @@ export const ParseableLogstreamPage = () => {
   // Safely prepare log data for rendering to avoid 'in' operator errors
   const prepareLogsForRendering = (logs: LogEntry[]): Record<string, any>[] => {
     return logs.map(log => {
-      const preparedLog: Record<string, any> = {};
+      // Create a new object with safe values for the table
+      const preparedLog: Record<string, any> = {
+        // Add a special property that Material Table needs for the 'in' operator
+        original: {}
+      };
+      
       Object.entries(log).forEach(([key, value]) => {
         // Ensure all values are strings or primitives, not complex objects
         if (value === null || value === undefined) {
@@ -396,15 +401,21 @@ export const ParseableLogstreamPage = () => {
         } else {
           preparedLog[key] = String(value);
         }
+        
+        // Also store the original value in the 'original' property
+        preparedLog.original[key] = value;
       });
+      
       // Add levelColor separately since it's used for styling
       if (log.levelColor) {
         preparedLog.levelColor = log.levelColor;
+        preparedLog.original.levelColor = log.levelColor;
       }
+      
       return preparedLog;
     });
   };
-  
+
   // Format body column content for better readability
   const formatBodyContent = (value: any): string => {
     if (!value) return '';
@@ -449,7 +460,7 @@ export const ParseableLogstreamPage = () => {
   if (error) {
     return (
       <Content>
-        <ContentHeader title="Parseable Logstream" />
+        <ContentHeader title="Parseable Dataset" />
         <ErrorPanel
           error={error}
         >
@@ -462,7 +473,7 @@ export const ParseableLogstreamPage = () => {
   if (datasets.length === 0) {
     return (
       <Content>
-        <ContentHeader title="Parseable Logstream" />
+        <ContentHeader title="Parseable Dataset" />
         <EmptyState
           missing="data"
           title="No datasets available"
@@ -474,15 +485,15 @@ export const ParseableLogstreamPage = () => {
 
   return (
     <Content>
-      <ContentHeader title="Parseable Logstream">
+      <ContentHeader title="Parseable Dataset">
         <SupportButton>
-          View your Parseable log streams with advanced search capabilities.
+          View your Parseable datasets with advanced search capabilities.
         </SupportButton>
       </ContentHeader>
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <InfoCard title="Parseable Logs">
+          <InfoCard title="Parseable Dataset">
             {!entityContext.available && (
               <div style={{ marginBottom: '24px' }}>
                 <Typography variant="subtitle1" gutterBottom>
@@ -523,7 +534,7 @@ export const ParseableLogstreamPage = () => {
               </Select>
             </FormControl>
 
-            <div className={classes.timeRangeControls}>
+            {/* <div className={classes.timeRangeControls}>
               <TextField
                 label="Start Date"
                 type="datetime-local"
@@ -543,7 +554,7 @@ export const ParseableLogstreamPage = () => {
                 disabled={isLiveTail}
                 size="small"
               />
-            </div>
+            </div> */}
             
             <TextField
               className={classes.searchFieldEnhanced}

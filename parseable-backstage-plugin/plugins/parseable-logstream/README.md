@@ -1,10 +1,10 @@
-# Parseable Logstream Plugin for Backstage
+# Parseable Dataset Plugin for Backstage
 
-This plugin allows engineers to pull their own Parseable log-streams directly onto an entity page in Backstage.
+This plugin allows engineers to pull their own Parseable datasets directly onto an entity page in Backstage.
 
 ## Features
 
-- View log streams from Parseable directly in Backstage
+- View datasets from Parseable directly in Backstage
 - Select from available datasets the user has access to
 - Live tail support with pause/resume functionality
 - Copy log entries to clipboard
@@ -75,7 +75,7 @@ const serviceEntityPage = (
 
 ### Entity Annotation
 
-To enable the Parseable logstream for an entity, add the following annotation to your `catalog-info.yaml`:
+To enable the Parseable dataset for an entity, add the following annotation to your `catalog-info.yaml`:
 
 ```yaml
 apiVersion: backstage.io/v1alpha1

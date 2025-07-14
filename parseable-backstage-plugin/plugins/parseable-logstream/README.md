@@ -8,12 +8,7 @@ This plugin allows engineers to pull their own Parseable datasets directly onto 
 
 - View datasets from Parseable directly in Backstage
 - Select from available datasets the user has access to
-- Live tail support with pause/resume functionality
 - Copy log entries to clipboard
-- Advanced search page with:
-  - Time range selection
-  - Free-text search
-  - Export to CSV
 
 ## Installation
 

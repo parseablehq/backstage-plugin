@@ -1,6 +1,6 @@
 {
   "name": "@parseable/backstage-plugin-logstream",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Backstage plugin for integrating with Parseable log streams",
   "keywords": ["backstage", "plugin", "parseable", "logs", "monitoring"],
   "author": "Parseable",

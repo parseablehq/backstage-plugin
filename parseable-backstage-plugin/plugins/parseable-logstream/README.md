@@ -2,6 +2,8 @@
 
 This plugin allows engineers to pull their own Parseable datasets directly onto an entity page in Backstage.
 
+<img width="1919" height="957" alt="Screenshot 2025-07-14 at 8 05 07 AM" src="https://github.com/user-attachments/assets/1e288c00-995d-4087-b70d-a201dd475829" />
+
 ## Features
 
 - View datasets from Parseable directly in Backstage

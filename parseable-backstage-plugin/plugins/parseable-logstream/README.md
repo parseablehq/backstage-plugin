@@ -16,7 +16,7 @@ This plugin allows engineers to pull their own Parseable datasets directly onto 
 
 ```bash
 # From your Backstage root directory
-yarn add --cwd packages/app @parseable/backstage-plugin-logstream
+yarn --cwd packages/app add @parseable/backstage-plugin-logstream
 ```
 
 2. Configure the plugin in your `app-config.yaml`:
